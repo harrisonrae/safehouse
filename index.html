@@ -1,61 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Password to Image</title>
-<style>
-    body {
-        font-family: sans-serif;
-        text-align: center;
-        background: #f0f0f0;
-        margin-top: 50px;
-    }
-    .hidden { display: none; }
-    .emoji {
-        font-size: 80px;
-    }
-    input[type="password"] {
-        padding: 5px;
-        font-size: 16px;
-    }
-    button {
-        padding: 5px 10px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    img {
-        max-width: 90%;
-        height: auto;
-    }
-</style>
-</head>
-<body>
-
-<div id="login-screen">
-    <div class="emoji">🏠</div>
-    <p>Enter Password:</p>
-    <input type="password" id="password">
-    <button onclick="checkPassword()">Submit</button>
-</div>
-
-<div id="image-screen" class="hidden">
-    <img src="https://via.placeholder.com/600x400.png?text=Welcome" alt="Welcome">
-</div>
-
-<script>
-    const CORRECT_PASSWORD = "1234"; // change your password here
-
-    function checkPassword() {
-        const pw = document.getElementById('password').value;
-        if (pw === CORRECT_PASSWORD) {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('image-screen').classList.remove('hidden');
-        } else {
-            alert("Incorrect password. Try again.");
-            document.getElementById('password').value = "";
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe House</title>
+    <style>
+        body {
+            background-color: white;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            cursor: pointer;
         }
-    }
-</script>
+        h1 {
+            font-size: 3rem;
+            border: 2px solid white;
+            padding: 20px 40px;
+            transition: background 0.3s, color 0.3s;
+            transition: opacity 1s ease;
+            z-index: 1000;
+        }
+        h1:hover {
+            background: white;
+            color: #e0dff0;
+        }
+    </style>
+</head>
+<body onclick="startSite()">
+    <h1>click to enter</h1>
 
+    <script>
+        function startSite() {
+            window.location.href = "main.html"; // Change to your actual page file
+        }
+    </script>
 </body>
 </html>
