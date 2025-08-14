@@ -4,19 +4,20 @@
 <meta charset="UTF-8">
 <title>Safe House - Retro Game Style</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
+  /* Retro font */
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
   body {
     margin: 0;
     background: #e0dff0; /* light purple Game Boy-ish */
     font-family: "Press Start 2P", monospace;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
   }
-
-  /* Load retro pixel font from Google Fonts */
-  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
   .game-container {
     width: 480px;
@@ -25,6 +26,7 @@
     background: #dcdcdc;
     position: relative;
     box-shadow: 0 0 20px #222;
+    margin-top: 24px;
   }
 
   .screen {
@@ -48,23 +50,77 @@
     line-height: 1.2;
   }
 
+  /* Button that sits just below the dialogue box */
   #actionButton {
     position: absolute;
-    bottom: -50px;
+    bottom: -54px; /* places it below the game frame */
     left: 50%;
     transform: translateX(-50%);
-    padding: 8px 16px;
+    padding: 8px 12px;
     font-size: 10px;
     font-family: "Press Start 2P", monospace;
     background: #000;
     color: #fff;
-    border: 2px solid #000;
+    border: 3px solid #000;
     cursor: pointer;
-    display: none; /* hidden at first */
+    display: none; /* hidden until typing finishes */
+  }
+  #actionButton:hover { background: #333; }
+
+  /* Safe Browsing panel under the game container */
+  .toolkit-wrap {
+    width: 480px;
+    margin-top: 72px; /* room for the floating button */
   }
 
-  #actionButton:hover {
-    background: #444;
+  #toolkitPanel {
+    background: #ffffff;
+    border: 4px solid #000;
+    box-shadow: 0 8px 0 #000, 0 12px 0 rgba(0,0,0,0.2);
+    padding: 12px;
+    box-sizing: border-box;
+    font-size: 11px;
+    color: #000;
+
+    /* hidden by default + slide down transition */
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 500ms ease, opacity 500ms ease;
+  }
+
+  #toolkitPanel.open {
+    max-height: 1200px; /* plenty of space for content */
+    opacity: 1;
+  }
+
+  #toolkitPanel h3 {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+  }
+  #toolkitPanel ul {
+    margin: 0 0 12px 18px;
+    padding: 0;
+    list-style: square;
+  }
+  #toolkitPanel li { margin: 6px 0; }
+  #toolkitPanel a {
+    color: #0d6efd;
+    text-decoration: none;
+  }
+  #toolkitPanel a:hover { text-decoration: underline; }
+
+  /* Small helper text */
+  .hint {
+    margin-top: 8px;
+    font-size: 9px;
+    color: #333;
+    text-align: center;
+  }
+
+  /* Make sure on small screens we scale down a bit */
+  @media (max-width: 520px) {
+    .game-container, .toolkit-wrap { width: 92vw; }
   }
 </style>
 </head>
@@ -75,19 +131,64 @@
   <div class="dialogue-box" id="dialogue">
     Loading safe house message...
   </div>
-  <button id="actionButton" onclick="alert('copy and paste this in to your browser to view the document!')">Continue</button>
+  <button id="actionButton" aria-expanded="false" aria-controls="toolkitPanel">
+    SAFE BROWSING TOOLKIT
+  </button>
+</div>
+
+<div class="toolkit-wrap">
+  <div id="toolkitPanel" role="region" aria-label="Safe Browsing Toolkit">
+    <h3>SAFE BROWSING TOOLKIT</h3>
+
+    <ul>
+      <li><strong>Tor Browser</strong> — route traffic through Tor. <a href="https://www.torproject.org/" target="_blank" rel="noopener">Download</a></li>
+      <li><strong>DuckDuckGo</strong> — private search. <a href="https://duckduckgo.com/" target="_blank" rel="noopener">Open</a></li>
+      <li><strong>Startpage</strong> — Google results, no tracking. <a href="https://startpage.com/" target="_blank" rel="noopener">Open</a></li>
+      <li><strong>SearXNG</strong> — meta-search, many public instances. <a href="https://searx.space/" target="_blank" rel="noopener">Instances</a></li>
+    </ul>
+
+    <h3>PROXY FRONT-ENDS</h3>
+    <ul>
+      <li><strong>Invidious</strong> — YouTube without tracking. <a href="https://invidious.io/" target="_blank" rel="noopener">Info</a></li>
+      <li><strong>Nitter</strong> — X/Twitter front-end. <a href="https://nitter.net/" target="_blank" rel="noopener">Open</a></li>
+      <li><strong>Libreddit</strong> — Reddit front-end. <a href="https://libreddit.net/" target="_blank" rel="noopener">Open</a></li>
+    </ul>
+
+    <h3>ENCRYPTED COLLAB & SHARING</h3>
+    <ul>
+      <li><strong>CryptPad</strong> — end-to-end docs, boards. <a href="https://cryptpad.fr/" target="_blank" rel="noopener">Open</a></li>
+      <li><strong>PrivateBin</strong> — encrypted pastebin. <a href="https://privatebin.info/" target="_blank" rel="noopener">Open</a></li>
+      <li><strong>OnionShare</strong> — share files via Tor. <a href="https://onionshare.org/" target="_blank" rel="noopener">Open</a></li>
+    </ul>
+
+    <h3>BROWSER DEFENSE</h3>
+    <ul>
+      <li><strong>uBlock Origin</strong> — content blocker. <a href="https://ublockorigin.com/" target="_blank" rel="noopener">Install</a></li>
+      <li><strong>Privacy Badger</strong> — tracker blocker (EFF). <a href="https://privacybadger.org/" target="_blank" rel="noopener">Install</a></li>
+      <li><strong>NoScript</strong> — script control (advanced). <a href="https://noscript.net/" target="_blank" rel="noopener">Install</a></li>
+    </ul>
+
+    <p class="hint">Tip: For maximum anonymity, open this page in <em>Tor Browser</em> and use the proxy front-ends from there.</p>
+  </div>
 </div>
 
 <!-- Background music -->
 <audio id="bgMusic" loop>
   <source src="music.mp3.mp3" type="audio/mpeg">
-  <!-- Replace music.mp3 with your actual music file -->
+  <!-- Replace music.mp3 with your actual file -->
 </audio>
 
 <script>
-  const fullText = "HELLO! WELCOME TO MY DIGITAL SAFEHOUSE. WE CAN JUST CHILL OUT AND LISTEN TO SOME MUSIC IF YOU'D LIKETHIS IS ONLY THE ENTRY POINT, SO YOU ARE MOST LIKELY HAVING YOUR DATA AND INFORMATION BEING HARVESTED RIGHT NOW. TO AVOID BEING TRACKED I RECOMMEND SPENDING TIME LOOKING AT SOME OF THE RESOURCES BELOW. OTHERWISE WE CAN JUST CHILL OUT IN MY ROOM AND LISTEN TO SOME MUSIC. ";
+  // Typewriter effect
+  const fullText =
+    "HELLO! WELCOME TO MY DIGITAL SAFEHOUSE." +
+    "WE CAN JUST CHILL OUT AND LISTEN TO SOME MUSIC IF YOU'D LIKE. " +
+    "BUT EVEN IN MY ROOM YOU ARE HAVING YOUR DATA BEING EXTRACTED RIGHT NOW.  " +
+    "TO AVOID BEING TRACKED I RECOMMEND SPENDING TIME LOOKING AT SOME OF THE RESOURCES BELOW. OTHERWISE WE CAN JUST CHILL OUT IN MY ROOM...";
+
   const dialogueEl = document.getElementById('dialogue');
   const actionButton = document.getElementById('actionButton');
+  const toolkitPanel = document.getElementById('toolkitPanel');
   const music = document.getElementById('bgMusic');
 
   let index = 0;
@@ -98,17 +199,30 @@
       index++;
       setTimeout(typeNextLetter, 60); // typing speed
     } else {
-      // Show the button after text finishes
+      // Show the toolkit button when typing finishes
       actionButton.style.display = 'block';
     }
   }
 
-  // Play music once user interacts (browser autoplay rules)
-  document.body.addEventListener('click', function startMusic() {
-    music.play().catch(e => console.log("Music blocked until interaction"));
-    document.body.removeEventListener('click', startMusic);
+  // Start music on first user interaction (autoplay policies)
+  function startMusicOnce() {
+    music.play().catch(()=>{});
+    document.removeEventListener('click', startMusicOnce);
+    document.removeEventListener('keydown', startMusicOnce);
+  }
+  document.addEventListener('click', startMusicOnce);
+  document.addEventListener('keydown', startMusicOnce);
+
+  // Toggle the Safe Browsing Toolkit panel
+  actionButton.addEventListener('click', () => {
+    const isOpen = toolkitPanel.classList.toggle('open');
+    actionButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    actionButton.textContent = isOpen ? 'HIDE SAFE BROWSING TOOLKIT' : 'SAFE BROWSING TOOLKIT';
+    // Ensure music plays when the button is clicked
+    music.play().catch(()=>{});
   });
 
+  // init
   dialogueEl.textContent = "";
   typeNextLetter();
 </script>

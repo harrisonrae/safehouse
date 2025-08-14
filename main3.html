@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Safe House - Retro Game Style</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    margin: 0;
+    background: #e0dff0; /* light purple Game Boy-ish */
+    font-family: "Press Start 2P", monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  /* Load retro pixel font from Google Fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  .game-container {
+    width: 480px;
+    height: 432px;
+    border: 8px solid #000;
+    background: #dcdcdc;
+    position: relative;
+    box-shadow: 0 0 20px #222;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: url('pokemon.png') no-repeat center center;
+    background-size: contain;
+    image-rendering: pixelated;
+  }
+
+  .dialogue-box {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    border-top: 4px solid #000;
+    padding: 8px;
+    box-sizing: border-box;
+    font-size: 12px;
+    color: #000;
+    line-height: 1.2;
+  }
+
+  #actionButton {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    font-size: 10px;
+    font-family: "Press Start 2P", monospace;
+    background: #000;
+    color: #fff;
+    border: 2px solid #000;
+    cursor: pointer;
+    display: none; /* hidden at first */
+  }
+
+  #actionButton:hover {
+    background: #444;
+  }
+</style>
+</head>
+<body>
+
+<div class="game-container">
+  <div class="screen"></div>
+  <div class="dialogue-box" id="dialogue">
+    Loading safe house message...
+  </div>
+  <button id="actionButton" onclick="alert('copy and paste this in to your browser to view the document!')">Continue</button>
+</div>
+
+<!-- Background music -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3.mp3" type="audio/mpeg">
+  <!-- Replace music.mp3 with your actual music file -->
+</audio>
+
+<script>
+  const fullText = "HELLO! WELCOME TO MY DIGITAL SAFEHOUSE. WE CAN JUST CHILL OUT AND LISTEN TO SOME MUSIC IF YOU'D LIKE. BUT EVEN IN MY ROOM YOU ARE HAVING YOUR DATA BEING EXTRACTED RIGHT NOW. TO AVOID BEING TRACKED I RECOMMEND SPENDING TIME LOOKING AT SOME OF THE RESOURCES BELOW. OTHERWISE WE CAN JUST CHILL OUT IN MY ROOM...";
+  const dialogueEl = document.getElementById('dialogue');
+  const actionButton = document.getElementById('actionButton');
+  const music = document.getElementById('bgMusic');
+
+  let index = 0;
+
+  function typeNextLetter() {
+    if (index < fullText.length) {
+      dialogueEl.textContent += fullText[index];
+      index++;
+      setTimeout(typeNextLetter, 60); // typing speed
+    } else {
+      // Show the button after text finishes
+      actionButton.style.display = 'block';
+    }
+  }
+
+  // Play music once user interacts (browser autoplay rules)
+  document.body.addEventListener('click', function startMusic() {
+    music.play().catch(e => console.log("Music blocked until interaction"));
+    document.body.removeEventListener('click', startMusic);
+  });
+
+  dialogueEl.textContent = "";
+  typeNextLetter();
+</script>
+
+</body>
+</html>
